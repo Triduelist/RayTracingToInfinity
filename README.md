@@ -4,4 +4,5 @@ My spin off of Shirley's [Ray Tracing in One Weekend](http://www.realtimerenderi
 - Thread parallelization allowing for up to 4 times faster rendering
 - Added [Super Fast Media Library](https://www.sfml-dev.org/) for result visualization
 - New plane and disk hittables
+- Frosted and colored glass
 - Some code refactoring
