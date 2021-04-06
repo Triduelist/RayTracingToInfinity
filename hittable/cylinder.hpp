@@ -31,9 +31,9 @@ private:
 bool cylinder::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
     vec3 eminusc = r.origin() - center;
 
-    float a = (std::powf(r.direction().x(), 2)) + (std::pow(r.direction().y(), 2));
+    float a = (std::powf(r.direction().x(), 2)) + (std::powf(r.direction().y(), 2));
     float b = 2*(r.direction().x() * eminusc.x() + r.direction().y() * eminusc.y());
-    float c = std::powf(eminusc.x(), 2) + std::pow(eminusc.y(), 2) - std::pow(radius, 2);
+    float c = std::powf(eminusc.x(), 2) + std::powf(eminusc.y(), 2) - std::powf(radius, 2);
     float discriminant = b * b - 4 * a * c;
     if(discriminant < 0)
         return false;
@@ -43,8 +43,9 @@ bool cylinder::hit(const ray& r, float t_min, float t_max, hit_record& rec) cons
     float t3 = (-height / 2.0f - eminusc.z()) / r.direction().z();
 
     // We'll iterate through the values in sorted order so we find closest intersection first
-    std::vector<float> tarr{t1, t2, t3};
-    std::sort(tarr.begin(), tarr.end());
+    float tarr[] = {t1, t2, t3};
+    //std::vector<float> tarr{t1, t2, t3};
+    std::sort(std::begin(tarr), std::end(tarr));
 
     float t = INT_MIN;
     vec3 outward_normal{};

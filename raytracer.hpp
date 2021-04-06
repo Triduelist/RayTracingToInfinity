@@ -50,7 +50,7 @@ hittable_list random_scene() {
     for(int a = -11; a < 11; ++a) {
         for(int b = -11; b < 11; ++b) {
             auto choose_mat = random_float();
-            point3 center(a + .9*random_float(), .2, b + .9*random_float());
+            point3 center(a + .9f*random_float(), .2, b + .9f*random_float());
 
             if((center - point3(4, .2, 0)).length() > .9) {
                 shared_ptr<material> sphere_material;
@@ -255,9 +255,9 @@ hittable_list single_cylinder() {
 
     objects.add(make_shared<sphere>(point3(0, -1000, 0), 1000, make_shared<lambertian>(color(.2, .7, .2))));
 
-    auto material1 = make_shared<lambertian>(color(.7f, .5f, .5f));
-    shared_ptr<hittable> cyl = make_shared<cylinder>(point3(0, 1, 1), 1.0f, 2.0f, material1);
-    cyl = make_shared<rotate_y>(cyl, -18);
+    auto material1 = make_shared<dielectric>(1.5);
+    shared_ptr<hittable> cyl = make_shared<cylinder>(point3(0, 0, 1), 1.0f, 2.0f, material1);
+    rotate(cyl, 40, -18, 0);
 
     objects.add(cyl);
     return objects;
