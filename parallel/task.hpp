@@ -73,7 +73,7 @@ public:
                         const auto u = (float)((x + random_float()) / (params::WIDTH));
                         const auto v = (float)((y + random_float()) / (params::HEIGHT));
                         ray r = cam->get_ray(u, v);
-                        const vec3 col = ray_color(r, background, world, params::MAX_DEPTH);
+                        const vec3 col = ray_color2(r, background, world, params::MAX_DEPTH);
                         const unsigned pos = (y * params::WIDTH + x) * 5;
                         data[pos + 0] += col.x();
                         data[pos + 1] += col.y();

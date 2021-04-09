@@ -253,10 +253,12 @@ bool rotate_z::hit(const ray& r, float t_min, float t_max, hit_record& rec) cons
 }
 
 void rotate(shared_ptr<hittable>& p, float x, float y, float z) {
-    std::cout << x << " " << y << " " << z << std::endl;
-    p = make_shared<rotate_y>(p, y);
-    p = make_shared<rotate_x>(p, x);
-    p = make_shared<rotate_z>(p, z);
+    if(!y)
+        p = make_shared<rotate_y>(p, y);
+    if(!x)
+        p = make_shared<rotate_x>(p, x);
+    if(!z)
+        p = make_shared<rotate_z>(p, z);
 }
 
 #endif //RAYTRACING_ROTATE_HPP

@@ -16,11 +16,11 @@
 #include "hittable/2dhittables.hpp"
 
 float params::ASPECT_RATIO = 1.0f;
-unsigned params::WIDTH = 100;
+unsigned params::WIDTH = 1000;
 unsigned params::HEIGHT = int(params::WIDTH / params::ASPECT_RATIO);
 
-unsigned params::N = 10;//16;
-unsigned params::N_samples = 200;
+unsigned params::N = 20;//16;
+unsigned params::N_samples = 20;
 unsigned params::MAX_DEPTH = 16;
 
 unsigned params::W_CNT = (params::WIDTH + params::N - 1) / params::N;
@@ -92,23 +92,40 @@ int main() {
             lookat = point3(278, 278, 0);
             vfov = 40.0f;
             break;
-        default:
         case 9:
             world = single_cylinder();
+            background = color(.7f, .8f, 1.0f);
+            lookfrom = point3(0, 2, -15);
+            lookat = point3(0, 0, 0);
+            vfov = 20.0f;
+            aperture = .1f;
+            break;
+        case 10:
+            world = single_cone();
             background = color(.7f, .8f, 1.0f);
             lookfrom = point3(13, 2, 3);
             lookat = point3(0, 0, 0);
             vfov = 20.0f;
             aperture = .1f;
             break;
+        default:
+        case 11:
+            world = mapped_box();
+            background = color(1,1,1);
+            lookfrom = point3(9, -1, 0);
+            lookat = point3(0, -1, 0);
+            vfov = 40.0f;
+            aperture = .02f;
+            break;
     }
 
     // Render window
 
-    int window_w = 1024;
-    if(window_w > params::WIDTH) window_w = (int)params::WIDTH;
-    sf::RenderWindow window(sf::VideoMode(window_w, (window_w/params::ASPECT_RATIO)),
+//    int window_w = 700;
+//    if(window_w > params::WIDTH) window_w = (int)params::WIDTH;
+    sf::RenderWindow window(sf::VideoMode(params::WIDTH, (params::WIDTH/params::ASPECT_RATIO)),
                             "Ray Tracing", sf::Style::Titlebar | sf::Style::Close);
+    window.setSize(sf::Vector2u(700, 700/params::ASPECT_RATIO));
 
     sf::Texture tex;
     sf::Sprite sprite;

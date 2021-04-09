@@ -11,6 +11,7 @@
 #include "hittable.hpp"
 #include "aabb.hpp"
 #include "vec3.hpp"
+#include "rtweekend.hpp"
 
 class cylinder : public hittable {
 public:
@@ -26,6 +27,14 @@ private:
     point3 center;
     float radius, height;
     shared_ptr<material> mat_ptr;
+
+    static void get_cylinder_uv(const point3& p, float& u, float& v) {
+        // Compute the azimutal angle
+        float theta = std::atan2(p.x(), p.z());
+        float raw_u = theta / (2 * fpi);
+        u = 1 - (raw_u + .5f);
+        v = p.y(); // - floor(p.x());
+    }
 };
 
 bool cylinder::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
@@ -50,19 +59,18 @@ bool cylinder::hit(const ray& r, float t_min, float t_max, hit_record& rec) cons
     float t = INT_MIN;
     vec3 outward_normal{};
     for(float x : tarr) {
-        hit_record tmp;
-        tmp.p = r.origin() + r.direction() * x;
+        point3 p = r.origin() + r.direction() * x;
 
         if(x == t1) {
-            if(std::abs(tmp.p.z() - center.z()) < height / 2.0f) {
-                outward_normal = vec3(tmp.p.x() - center.x(), tmp.p.y() - center.y(), 0);
+            if(std::abs(p.z() - center.z()) < height / 2.0f) {
+                outward_normal = vec3(p.x() - center.x(), p.y() - center.y(), 0);
                 outward_normal = unit_vector(outward_normal);
                 t = x;
                 break;
             }
         }
         else {
-            if(std::pow(tmp.p.x() - center.x(), 2) + std::pow(tmp.p.y() - center.y(), 2) - std::pow(radius, 2) <= 0) {
+            if(std::pow(p.x() - center.x(), 2) + std::pow(p.y() - center.y(), 2) - std::pow(radius, 2) <= 0) {
                 if(x == t2) {
                     outward_normal = vec3(0,0,1);
                 }
@@ -82,12 +90,13 @@ bool cylinder::hit(const ray& r, float t_min, float t_max, hit_record& rec) cons
     rec.t = t;
     rec.p = r.at(t);
     rec.set_face_normal(r, outward_normal);
+    get_cylinder_uv(rec.normal, rec.u, rec.v);
 
     return true;
 }
 
 bool cylinder::bounding_box(float time0, float time1, aabb &output_box) const {
-    output_box = aabb(center - point3(radius, radius, height), center + point3(radius, radius, height));
+    output_box = aabb(center - point3(radius, height/2, radius), center + point3(radius, height/2, radius));
     return true;
 }
 

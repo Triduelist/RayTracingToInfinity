@@ -26,8 +26,6 @@ public:
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override {
         auto scatter_direction = rec.normal + random_unit_vector();
-        //std::cout << rec.p.x() << " " << rec.p.y() << " " << rec.p.z() << std::endl;
-        //std::cout << rec.normal.x() << " " << rec.normal.y() << " " << rec.normal.z() << std::endl;
         // Catch degenerate scatter direction
         if (scatter_direction.near_zero())
             scatter_direction = rec.normal;

@@ -27,7 +27,7 @@ public:
         rec.p = r.at(rec.t);
         //rec.set_face_normal(r, normal);
         rec.normal = normal;
-        get_plane_uv(normal, rec.u, rec.v);
+        get_plane_uv(rec.p, rec.u, rec.v);
         rec.mat_ptr = mat_ptr;
 
         return hit;
@@ -42,8 +42,8 @@ private:
     shared_ptr<material> mat_ptr;
 
     static void get_plane_uv(const point3& p, float& u, float& v) {
-        u = p.x();// - floor(p.x());
-        v = p.z();// - floor(p.z());
+        u = p.x() - floor(p.x());
+        v = p.z() - floor(p.z());
     }
 
 protected:
@@ -86,8 +86,8 @@ class xy_rect : public hittable {
 public:
     xy_rect() = default;
 
-    xy_rect(float _x0, float _x1, float _y0, float _y1, float _k, shared_ptr<material> mat)
-        : x0{_x0}, x1{_x1}, y0{_y0}, y1{_y1}, k{_k}, mp{std::move(mat)} {};
+    xy_rect(float _x0, float _x1, float _y0, float _y1, float _k, shared_ptr<material> mat, bool _rev=false)
+        : x0{_x0}, x1{_x1}, y0{_y0}, y1{_y1}, k{_k}, rev{_rev}, mp{std::move(mat)} {};
 
     bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const override {
         auto t = (k-r.origin().z()) / r.direction().z();
@@ -97,7 +97,7 @@ public:
         auto y = r.origin().y() + t*r.direction().y();
         if(x < x0 || x > x1 || y < y0 || y > y1)
             return false;
-        rec.u = (x-x0)/(x1-x0);
+        rec.u = rev ? ((x1-x)/(x1-x0)):((x-x0)/(x1-x0));
         rec.v = (y-y0)/(y1-y0);
         rec.t = t;
         auto outward_normal = vec3(0, 0, 1);
@@ -116,13 +116,14 @@ public:
 public:
     shared_ptr<material> mp;
     float x0{}, x1{}, y0{}, y1{}, k{};
+    bool rev;
 };
 
 class xz_rect : public hittable {
 public:
     xz_rect() = default;
 
-    xz_rect(float _x0, float _x1, float _z0, float _z1, float _k, shared_ptr<material> mat)
+    xz_rect(float _x0, float _x1, float _z0, float _z1, float _k,shared_ptr<material> mat, bool _rev=false)
             : x0{_x0}, x1{_x1}, z0{_z0}, z1{_z1}, k{_k}, mp{std::move(mat)} {};
 
     bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const override {
@@ -152,14 +153,15 @@ public:
 public:
     shared_ptr<material> mp;
     float x0{}, x1{}, z0{}, z1{}, k{};
+    bool rev;
 };
 
 class yz_rect : public hittable {
 public:
     yz_rect() = default;
 
-    yz_rect(float _y0, float _y1, float _z0, float _z1, float _k, shared_ptr<material> mat)
-            : y0{_y0}, y1{_y1}, z0{_z0}, z1{_z1}, k{_k}, mp{std::move(mat)} {};
+    yz_rect(float _y0, float _y1, float _z0, float _z1, float _k, shared_ptr<material> mat, bool _rev=false)
+            : y0{_y0}, y1{_y1}, z0{_z0}, z1{_z1}, k{_k}, rev{_rev}, mp{std::move(mat)} {};
 
     bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const override {
         auto t = (k-r.origin().x()) / r.direction().x();
@@ -169,8 +171,8 @@ public:
         auto z = r.origin().z() + t*r.direction().z();
         if (y < y0 || y > y1 || z < z0 || z > z1)
             return false;
-        rec.u = (y-y0)/(y1-y0);
-        rec.v = (z-z0)/(z1-z0);
+        rec.u = rev ? ((z1-z)/(z1-z0)):((z-z0)/(z1-z0));
+        rec.v = (y-y0)/(y1-y0);
         rec.t = t;
         auto outward_normal = vec3(1, 0, 0);
         rec.set_face_normal(r, outward_normal);
@@ -188,6 +190,7 @@ public:
 public:
     shared_ptr<material> mp;
     float y0{}, y1{}, z0{}, z1{}, k{};
+    bool rev;
 };
 
 #endif //RAYTRACING_2DHITTABLES_HPP

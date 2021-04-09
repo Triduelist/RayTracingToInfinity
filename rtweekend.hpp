@@ -23,11 +23,12 @@ using std::sqrt;
 const double infinity = std::numeric_limits<double>::infinity();
 const float f_infinity = std::numeric_limits<float>::infinity();
 const double pi = 3.1415926535897932385;
+const float fpi = 3.1415926535897932385f;
 
 // Utility functions
 
 inline float degrees_to_radians(float degrees) {
-    return degrees * pi / 180.0;
+    return degrees * fpi / 180.0;
 }
 
 inline double random_double() {

@@ -71,6 +71,23 @@ public:
     float scale{};
 };
 
+class corner_texture : public texture {
+public:
+    corner_texture() = default;
+
+    [[nodiscard]] color value(float u, float v, const point3& p) const override {
+        if(v > .8f) {
+            if(u < .2f) return color(1,0,0);
+            if(u > .8f) return color(1,1,0);
+        }
+        else if(v < .2f) {
+            if(u < .2f) return color(0,1,0);
+            if(u > .8f) return color(0,1,1);
+        }
+        return color(1,1,1);
+    }
+};
+
 class image_texture : public texture {
 public:
     const static int bytes_per_pixel = 3;

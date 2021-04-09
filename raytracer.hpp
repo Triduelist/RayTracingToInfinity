@@ -19,6 +19,7 @@
 #include "modifiers/constant_medium.hpp"
 #include "hittable/bvh.hpp"
 #include "hittable/cylinder.hpp"
+#include "hittable/cone.hpp"
 
 color ray_color(const ray& r, const color& background, const shared_ptr<hittable_list>& world, int depth) {
     hit_record rec;
@@ -41,16 +42,39 @@ color ray_color(const ray& r, const color& background, const shared_ptr<hittable
     return emitted + attenuation * ray_color(scattered, background, world, depth-1);
 }
 
+color ray_color2(const ray& r, const color& background, const shared_ptr<hittable_list>& world, int depth) {
+    ray r_in = r;//ray(r.origin(), r.direction());
+    color rcolor = color(1,1,1);
+    while(true) {
+        hit_record rec;
+        if(depth <= 0)
+            return color(0,0,0);
+        if(!world->hit(r_in, 0.001f, f_infinity, rec))
+            return background * rcolor;
+
+        ray scattered;
+        color attenuation;
+        color emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
+
+        if(!rec.mat_ptr->scatter(r_in, rec, attenuation, scattered))
+            return emitted * rcolor;
+
+        r_in = scattered;
+        --depth;
+        rcolor = emitted + attenuation * rcolor;
+    }
+}
+
 hittable_list random_scene() {
     hittable_list world;
 
     auto checker = make_shared<checker_texture>(color(.2f, .3f, .1f), color(.9f, .9f, .9f));
-    world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, make_shared<lambertian>(checker)));
+    world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, make_shared<lambertian>(color(1,1,1))));
 
     for(int a = -11; a < 11; ++a) {
         for(int b = -11; b < 11; ++b) {
             auto choose_mat = random_float();
-            point3 center(a + .9f*random_float(), .2, b + .9f*random_float());
+            point3 center((float)a + .9f*random_float(), .2, (float)b + .9f*random_float());
 
             if((center - point3(4, .2, 0)).length() > .9) {
                 shared_ptr<material> sphere_material;
@@ -170,7 +194,7 @@ hittable_list cornell_smoke() {
 
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
     objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
-    objects.add(make_shared<xz_rect>(113, 443, 127, 432, 554, light));
+    objects.add(make_shared<xz_rect>(123, 423, 147, 412, 554, light));
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
     objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
@@ -253,13 +277,46 @@ hittable_list final_scene() {
 hittable_list single_cylinder() {
     hittable_list objects;
 
+    auto material1 = make_shared<dielectric>(1.5);
+    shared_ptr<hittable> cyl = make_shared<cylinder>(point3(0, 1, 0), 1.0f, 2.0f, material1);
+    rotate(cyl, 40, -18, 0);
+    cyl = make_shared<rotate_y>(cyl, 40);
+
+    objects.add(cyl);
+    return objects;
+}
+
+hittable_list single_cone() {
+    hittable_list objects;
+
     objects.add(make_shared<sphere>(point3(0, -1000, 0), 1000, make_shared<lambertian>(color(.2, .7, .2))));
 
     auto material1 = make_shared<dielectric>(1.5);
-    shared_ptr<hittable> cyl = make_shared<cylinder>(point3(0, 0, 1), 1.0f, 2.0f, material1);
-    rotate(cyl, 40, -18, 0);
+    shared_ptr<hittable> cne = make_shared<cone>(point3(0, 1, 0), .5f, 2.f, 1.f, material1);
 
-    objects.add(cyl);
+    objects.add(cne);
+    return objects;
+}
+
+hittable_list mapped_box() {
+    hittable_list objects;
+
+    objects.add(make_shared<sphere>(point3(3, -1, 0), 1.f, make_shared<metal>(color(.7f,.7f,.7f), 0)));
+
+    std::vector<shared_ptr<material>> skybox = {
+            make_shared<diffuse_light>(make_shared<image_texture>("img_textures/stor/posz.jpg")),
+            make_shared<diffuse_light>(make_shared<image_texture>("img_textures/stor/negz.jpg")),
+            make_shared<diffuse_light>(make_shared<image_texture>("img_textures/stor/posy.jpg")),
+            make_shared<diffuse_light>(make_shared<image_texture>("img_textures/stor/negy.jpg")),
+            make_shared<diffuse_light>(make_shared<image_texture>("img_textures/stor/posx.jpg")),
+            make_shared<diffuse_light>(make_shared<image_texture>("img_textures/stor/negx.jpg"))
+    };
+
+
+    auto emat = make_shared<lambertian>(make_shared<image_texture>("img_textures/earthmap.jpeg"));
+    shared_ptr<hittable> box1 = make_shared<box>(point3(-10,-10,-10), point3(10,10,10), skybox);
+    objects.add(box1);
+
     return objects;
 }
 
