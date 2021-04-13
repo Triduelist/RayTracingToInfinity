@@ -11,7 +11,6 @@
 #include <cstdlib>
 #include <random>
 
-
 // Usings
 
 using std::shared_ptr;

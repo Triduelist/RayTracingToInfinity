@@ -58,4 +58,5 @@ bool hittable_list::bounding_box(float time0, float time1, aabb &output_box) con
 
     return true;
 }
+
 #endif //RAYTRACING_HITTABLE_LIST_HPP

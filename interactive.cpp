@@ -5,23 +5,26 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <iostream>
 
 #include <SFML/Graphics.hpp>
 
+#include "scenes.hpp"
 #include "raytracer.hpp"
 #include "timer.hpp"
 #include "parallel/pixels.hpp"
 #include "parallel/task.hpp"
 #include "parallel/params.hpp"
 #include "hittable/2dhittables.hpp"
+#include "denoise.hpp"
 
 float params::ASPECT_RATIO = 1.0f;
-unsigned params::WIDTH = 1000;
+unsigned params::WIDTH = 100;
 unsigned params::HEIGHT = int(params::WIDTH / params::ASPECT_RATIO);
 
-unsigned params::N = 20;//16;
+unsigned params::N = 16;//16;
 unsigned params::N_samples = 20;
-unsigned params::MAX_DEPTH = 16;
+unsigned params::MAX_DEPTH = 50;
 
 unsigned params::W_CNT = (params::WIDTH + params::N - 1) / params::N;
 unsigned params::H_CNT = (params::HEIGHT + params::N - 1) / params::N;
@@ -34,6 +37,8 @@ int main() {
     auto vfov = 40.0f;
     auto aperture = .0f;
     color background(0, 0, 0);
+    auto time0 = .0f;
+    auto time1 = 1.0f;
 
     switch(0) {
         case 1:
@@ -79,6 +84,7 @@ int main() {
             lookat = point3(278, 278, 0);
             vfov = 40.0f;
             break;
+        default:
         case 7:
             world = cornell_smoke();
             lookfrom = point3(278, 278, -800);
@@ -101,6 +107,7 @@ int main() {
             aperture = .1f;
             break;
         case 10:
+            params::N_samples = 10;
             world = single_cone();
             background = color(.7f, .8f, 1.0f);
             lookfrom = point3(13, 2, 3);
@@ -108,7 +115,6 @@ int main() {
             vfov = 20.0f;
             aperture = .1f;
             break;
-        default:
         case 11:
             world = mapped_box();
             background = color(1,1,1);
@@ -117,12 +123,17 @@ int main() {
             vfov = 40.0f;
             aperture = .02f;
             break;
+        case 12:
+            world = cornell_glass();
+            background = color(0, 0, 0);
+            lookfrom = point3(278, 278, -800);
+            lookat = point3(278, 278, 0);
+            vfov = 40.0f;
+            break;
     }
 
     // Render window
 
-//    int window_w = 700;
-//    if(window_w > params::WIDTH) window_w = (int)params::WIDTH;
     sf::RenderWindow window(sf::VideoMode(params::WIDTH, (params::WIDTH/params::ASPECT_RATIO)),
                             "Ray Tracing", sf::Style::Titlebar | sf::Style::Close);
     window.setSize(sf::Vector2u(700, 700/params::ASPECT_RATIO));
@@ -173,6 +184,13 @@ int main() {
         if(!finished_rendering && done_count == n_threads) {
             std::cout << "Finished rendering in " << timer.get_millis() << " ms or "
                       << timer.get_seconds() << "s. " << std::endl;
+            std::string option{};
+            std::cout << "Apply denoise? (Y or N): ";
+            std::cin >> option;
+            if(option == "Y" || option == "y" || option == "yes" || option == "Yes") {
+                data_denoise(data);
+                std::cout << "Denoise applied successfully!";
+            }
             finished_rendering = true;
         }
 

@@ -24,7 +24,7 @@ public:
     solid_color(float red, float green, float blue)
             : solid_color(color(red,green,blue)) {}
 
-    color value(float u, float v, const point3& p) const override {
+    [[nodiscard]] color value(float u, float v, const point3& p) const override {
         return color_value;
     }
 
@@ -96,7 +96,7 @@ public:
         : data(nullptr), width(0), height(0), bytes_per_scanline(0)
     {}
 
-    image_texture(const char* filename) {
+    explicit image_texture(const char* filename) {
         auto components_per_pixel = bytes_per_pixel;
 
         data = stbi_load(filename, &width, &height, &components_per_pixel, components_per_pixel);
@@ -122,8 +122,8 @@ public:
         u = fclamp(u, .0f, 1.0f);
         v = 1.0f - fclamp(v, .0f, 1.0f); // Flip V to image coordinates
 
-        auto i = static_cast<int>(u * width);
-        auto j = static_cast<int>(v * height);
+        auto i = static_cast<int>(u * (int)width);
+        auto j = static_cast<int>(v * (int)height);
 
         // fclamp integer mapping, since actual coordinates should be less than 1.0
         if(i >= width) i = width-1;
@@ -132,7 +132,7 @@ public:
         const auto color_scale = 1.0f / 255.0f;
         auto pixel = data + j * bytes_per_scanline + i * bytes_per_pixel;
 
-        return color(color_scale*pixel[0], color_scale*pixel[1], color_scale*pixel[2]);
+        return color(color_scale*(float)pixel[0], color_scale*(float)pixel[1], color_scale*(float)pixel[2]);
     }
 
 private:

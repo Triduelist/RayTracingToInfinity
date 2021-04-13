@@ -10,6 +10,7 @@
 #include "hittable.hpp"
 #include "aabb.hpp"
 #include "vec3.hpp"
+#include "onb.hpp"
 
 class sphere : public hittable {
 public:
@@ -35,8 +36,20 @@ private:
 
         float phi = atan2(p.z(), p.x());
         float theta = asin(p.y());
-        u = 1 - (phi + M_PI) / (2 * M_PI);
-        v = (theta + M_PI / 2) / M_PI;
+        u = 1 - (phi + fpi) / (2 * fpi);
+        v = (theta + fpi / 2) / fpi;
+    }
+
+    static vec3 random_to_sphere(float radius, float distance_squared) {
+        auto r1 = random_float();
+        auto r2 = random_float();
+        auto z = 1 + r2*(sqrtf(1.f-radius*radius/distance_squared) - 1);
+
+        auto phi = 2*fpi*r1;
+        auto x = cosf(phi)*sqrtf(1.f-z*z);
+        auto y = sinf(phi)*sqrtf(1.f-z*z);
+
+        return vec3(x, y, z);
     }
 };
 
@@ -74,4 +87,5 @@ bool sphere::bounding_box(float time0, float time1, aabb &output_box) const {
             center + vec3(radius, radius, radius));
     return true;
 }
+
 #endif //RAYTRACING_SPHERE_H

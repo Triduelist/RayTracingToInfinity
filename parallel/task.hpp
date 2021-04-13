@@ -22,11 +22,11 @@ public:
     static void move_in_pattern(int& rx, int& ry) {
         // snake pattern implementation
         static int x = -1, y = int(params::H_CNT) - 1;
-        static int dir = 0;
+        static bool dir = false;
 
         x = dir ? x - 1 : x + 1;
         if(x == params::W_CNT || x == -1) {
-            x = y & 1 ? int(params::W_CNT) - 1 : 0;
+            x = x == -1 ? 0 : params::W_CNT - 1;//y & 1 ? int(params::W_CNT) - 1 : 0;
             y--;
             dir = !dir;
         }
