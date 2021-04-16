@@ -7,7 +7,7 @@
 
 #include "rtweekend.hpp"
 
-#include "2dhittables.hpp"
+#include "rectangles.hpp"
 #include "hittable_list.hpp"
 
 class box : public hittable {

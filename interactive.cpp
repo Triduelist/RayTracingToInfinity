@@ -15,11 +15,11 @@
 #include "parallel/pixels.hpp"
 #include "parallel/task.hpp"
 #include "parallel/params.hpp"
-#include "hittable/2dhittables.hpp"
+#include "hittable/rectangles.hpp"
 #include "denoise.hpp"
 
 float params::ASPECT_RATIO = 1.0f;
-unsigned params::WIDTH = 100;
+unsigned params::WIDTH = 200;
 unsigned params::HEIGHT = int(params::WIDTH / params::ASPECT_RATIO);
 
 unsigned params::N = 16;//16;
@@ -49,33 +49,23 @@ int main() {
             vfov = 20.0f;
             aperture = .1f;
             break;
+        default:
         case 2:
-            world = two_spheres();
-            background = color(.7f, .8f, 1.0f);
-            lookfrom = point3(13, 2, 3);
-            lookat = point3(0, 0, 0);
+            world = mesh_test();
+            lookfrom = point3(13, 6, 3);
+            lookat = point3(0,1,0);
             vfov = 20.0f;
-            break;
-        case 3:
-            world = two_perlin_spheres();
             background = color(.7f, .8f, 1.0f);
-            lookfrom = point3(13, 2, 3);
-            lookat = point3(0, 0, 0);
-            vfov = 20.0f;
+            aperture = .1f;
+            params::ASPECT_RATIO = 16.f/9.f;
+            params::HEIGHT = int(params::WIDTH / params::ASPECT_RATIO);
             break;
         case 4:
-            world = earth();
-            background = color(.7f, .8f, 1.0f);
-            lookfrom = point3(13, 2, 3);
-            lookat = point3(0, 0, 0);
-            vfov = 20.0f;
-            break;
-        case 5:
-            world = simple_light();
-            background = color(0.0f, 0.0f, 0.0f);
-            lookfrom = point3(26, 3, 6);
-            lookat = point3(0, 2, 0);
-            vfov = 20.0f;
+            world = moving_spheres();
+            lookfrom = point3(378, 300, 50);
+            lookat = point3(-150, -150, -150);
+            params::ASPECT_RATIO = 3.0f/2.0f;
+            params::HEIGHT = int(params::WIDTH / params::ASPECT_RATIO);
             break;
         case 6:
             world = cornell_box();
@@ -84,7 +74,6 @@ int main() {
             lookat = point3(278, 278, 0);
             vfov = 40.0f;
             break;
-        default:
         case 7:
             world = cornell_smoke();
             lookfrom = point3(278, 278, -800);
@@ -165,7 +154,7 @@ int main() {
 
     Timer timer;
 
-    for(auto& t : threads) t = std::thread(Task{world, cam, background, &data[0]});
+    for(auto& t : threads) t = std::thread(Task{&world, &cam, background, &data[0]});
 
     bool finished_rendering = false;
 
@@ -191,6 +180,7 @@ int main() {
                 data_denoise(data);
                 std::cout << "Denoise applied successfully!";
             }
+            std::cout << "No denoise applied.";
             finished_rendering = true;
         }
 

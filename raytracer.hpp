@@ -12,7 +12,7 @@
 #include "hittable/hittable_list.hpp"
 #include "modifiers/material.hpp"
 
-//color ray_color(const ray& r, const color& background, const shared_ptr<hittable_list>& world,
+//color ray_color(const ray& r, const color& background, const hittable_list* world,
 //                shared_ptr<hittable_list>& lights, int depth) {
 //    hit_record rec;
 //
@@ -43,7 +43,7 @@
 //        * ray_color(scattered, background, world, lights, depth-1) / pdf_val;
 //}
 
-color ray_color2(const ray& r, const color& background, const shared_ptr<hittable_list>& world, int depth) {
+color ray_color2(const ray& r, const color& background, const hittable_list* world, int depth) {
     ray r_in = r;
     color rcolor = color(1,1,1);
     while(true) {

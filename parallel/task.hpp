@@ -14,9 +14,9 @@ std::atomic<unsigned> done_count;
 
 class Task {
 public:
-    Task(hittable_list& w, camera& c, color& back, float* d)
-            : my_id{id++}, world{make_shared<hittable_list>(w)},
-              cam{make_shared<camera>(c)}, background(back), data{d}
+    Task(hittable_list* w, camera* c, color& back, float* d)
+            : my_id{id++}, world{w},
+              cam{c}, background(back), data{d}
     {}
 
     static void move_in_pattern(int& rx, int& ry) {
@@ -26,7 +26,7 @@ public:
 
         x = dir ? x - 1 : x + 1;
         if(x == params::W_CNT || x == -1) {
-            x = x == -1 ? 0 : params::W_CNT - 1;//y & 1 ? int(params::W_CNT) - 1 : 0;
+            x = x == -1 ? 0 : params::W_CNT - 1;
             y--;
             dir = !dir;
         }
@@ -93,8 +93,8 @@ public:
     int sx = -1, sy = -1;
     int my_id;
     static int id;
-    shared_ptr<hittable_list> world{};
-    shared_ptr<camera> cam{};
+    hittable_list* world;
+    camera* cam;
     float* data;
     color background{};
 };
