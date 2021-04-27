@@ -10,7 +10,7 @@ SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
-add_executable(RayTracingInteractive interactive.cpp vec3.hpp color.hpp ray.hpp hittable/hittable.hpp hittable/sphere.hpp hittable/hittable_list.hpp rtweekend.hpp camera.hpp modifiers/material.hpp timer.hpp raytracer.hpp hittable/rectangles.hpp hittable/moving_sphere.hpp hittable/aabb.hpp hittable/bvh.hpp modifiers/texture.hpp modifiers/perlin.hpp rtw_stb_image.hpp hittable/box.hpp modifiers/rotate.hpp modifiers/constant_medium.hpp hittable/cylinder.hpp hittable/cone.hpp scenes.hpp onb.hpp denoise.hpp hittable/2dhittables.hpp hittable/triangles.hpp hittable/mesh.hpp)
+add_executable(RayTracingInteractive interactive.cpp vec3.hpp color.hpp ray.hpp hittable/hittable.hpp hittable/sphere.hpp hittable/hittable_list.hpp rtweekend.hpp camera.hpp modifiers/material.hpp timer.hpp raytracer.hpp hittable/rectangles.hpp hittable/moving_sphere.hpp hittable/aabb.hpp hittable/bvh.hpp modifiers/texture.hpp modifiers/perlin.hpp rtw_stb_image.hpp hittable/box.hpp modifiers/rotate.hpp modifiers/constant_medium.hpp hittable/cylinder.hpp hittable/cone.hpp scenes.hpp onb.hpp denoise.hpp hittable/2dhittables.hpp hittable/triangles.hpp hittable/triangles.hpp hittable/mesh.hpp render.hpp)
 include_directories(${SFML_INCLUDE_DIRS})
 target_link_libraries(RayTracingInteractive sfml-graphics)
 target_link_libraries(RayTracingInteractive "/usr/local/Cellar/open-image-denoise/1.3.0/lib/libOpenImageDenoise.1.dylib")

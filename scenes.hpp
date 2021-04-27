@@ -313,11 +313,33 @@ hittable_list mapped_box() {
     return objects;
 }
 
+hittable_list gold_coin() {
+    hittable_list objects;
+
+    auto aluminum = make_shared<metal>(color(.5f,.5f,.5f), .0f);
+    auto light = make_shared<diffuse_light>(color(12,12,12));
+
+    auto gold = make_shared<lambertian>(color(0.843137255f,0.717647059f,0.250980392f));
+    auto object = make_shared<mesh>("resources/coin_reduced.obj", gold, point3(0,.2,0), .1f);
+    objects.add(object);
+
+    objects.add(make_shared<flip_face>(make_shared<yz_rect>(0, 1.5f, -5, 10, 5, light)));
+
+    auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
+    objects.add(make_shared<sphere>(point3(0,-1000,0), 1000, ground_material));
+
+    return objects;
+}
+
 hittable_list mesh_test() {
     hittable_list objects;
 
-    auto material2 = make_shared<metal>(color(0.5, 0.5, 0.5), 0.0);
-    auto object = make_shared<mesh>("resources/teapot.obj", material2, point3(0,0,0), .5f);
+    auto aluminum = make_shared<metal>(color(.5f,.5f,.5f), .0f);
+    auto red = make_shared<lambertian>(color(.7f,.5f,.5f));
+
+    auto light = make_shared<diffuse_light>(color(12,12,12));
+
+    auto object = make_shared<mesh>("resources/teapot.obj", red, point3(0,.2,0), .7f);
     objects.add(object);
 
     auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));

@@ -11,8 +11,9 @@ My spin off of Shirley's [Ray Tracing in One Weekend](http://www.realtimerenderi
 - Export to PNG, a filetype more user-friendly than PPM.
 - Some code refactoring
 ## Some Renders
-![skybox](https://github.com/AnonymousAAArdvark/RayTracingToInfinity/blob/master/output/skybox2_processed.png)
-![final render](https://github.com/AnonymousAAArdvark/RayTracingToInfinity/blob/master/output/final_render.png)
-![random scene](https://github.com/AnonymousAAArdvark/RayTracingToInfinity/blob/master/output/imagehq.png)
+![skybox](https://github.com/AnonymousAAArdvark/RayTracingToInfinity/blob/master/output/skybox2.jpg)
+![coin](https://github.com/AnonymousAAArdvark/RayTracingToInfinity/blob/master/output/coin.jpg)
+![final render](https://github.com/AnonymousAAArdvark/RayTracingToInfinity/blob/master/output/final_render.jpg)
+![random scene](https://github.com/AnonymousAAArdvark/RayTracingToInfinity/blob/master/output/imagehq.jpg)
 ![cornell glass objects](https://github.com/AnonymousAAArdvark/RayTracingToInfinity/blob/master/output/denoised_glass_x2.jpg)
 ![cornell smoke blocks](https://github.com/AnonymousAAArdvark/RayTracingToInfinity/blob/master/output/denoised_photos_v2_x2.jpg)

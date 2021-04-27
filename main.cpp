@@ -7,23 +7,27 @@
 #include "modifiers/material.hpp"
 #include "timer.hpp"
 #include "raytracer.hpp"
+#include "scenes.hpp"
 
 #include <iostream>
 
 int main() {
     // Image
-    const auto aspect_ratio = 3.0 / 2.0;
-    const int image_width = 1024;
+//    const auto aspect_ratio = 3.0 / 2.0;
+    const auto aspect_ratio = 16.0/9.0;
+    const int image_width = 500;
     const int image_height = static_cast<int>(image_width/aspect_ratio);
     const int samples_per_pixel = 10;
     const int max_depth = 16;
 
     // World
-    auto world = random_scene();
+    auto world = mesh_test();
 
     // Camera
 
-    point3 lookfrom(13, 2, 3);
+//    point3 lookfrom(13, 2, 3);
+    color background = color(0,0,0);
+    point3 lookfrom = point3(0, 4, -3);
     point3 lookat(0,0,0);
     vec3 vup(0,1,0);
     auto dist_to_focus = 10.0;
@@ -43,7 +47,7 @@ int main() {
                 auto u = (i + random_float()) / (image_width-1);
                 auto v = (j + random_float()) / (image_height-1);
                 ray r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, world, max_depth);
+                pixel_color += ray_color2(r, background, &world, max_depth);
             }
             write_color(std::cout, pixel_color, samples_per_pixel);
         }

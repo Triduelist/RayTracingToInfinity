@@ -1,5 +1,5 @@
 //
-// Created by Andrew Yang on 4/15/21.
+// Created by Andrew Yang on 4/21/21.
 //
 
 #ifndef RAYTRACING_MESH_HPP
@@ -11,12 +11,12 @@
 #include <fstream>
 #include <sstream>
 
-#include "triangles.hpp"
+#include "bvh.hpp"
 #include "hittable.hpp"
+#include "triangles.hpp"
 
 class mesh : public hittable {
 public:
-    mesh() = default;
     mesh(const std::string& path, const shared_ptr<material>& m, point3 origin, float scale) {
         mat_ptr = m;
 
@@ -34,18 +34,25 @@ public:
                 vertices.emplace_back(x,y,z);
             }
             else if(op == "f") {
-                int v0, v1, v2, i;
+                int v[3];
+                std::string temp{};
+                for(int i=0; i < 3; ++i) {
+                    linestream >> v[i];
+                    if(linestream.peek() != ' ' && !isdigit(linestream.peek()))
+                        linestream >> temp;
+                }
                 char c;
-//                linestream >> v0 >> c >> i >> c >> i >> v1 >> c >> i >> c >> i >> v2;
-                linestream >> v0 >> v1 >> v2;
-                faces.emplace_back(vertices[v0 - 1], vertices[v1 - 1], vertices[v2 - 1], m);
-                faces.back().v1 = faces.back().v1 * scale + origin;
-                faces.back().v2 = faces.back().v2 * scale + origin;
-                faces.back().v3 = faces.back().v3 * scale + origin;
+                int i;
+//                linestream >> v[0] >> c >> i >> c >> i >> v[1] >> c >> i >> c >> i >> v[2];
+//                linestream >> v0 >> c >> c >> i >> v1 >> c >> c >> i >> v2;
+//                linestream >> v[0] >> v[1] >> v[2];
+                faces.emplace_back(vertices[v[0] - 1], vertices[v[1] - 1], vertices[v[2] - 1], m);
             }
-
             linestream.str(std::string());
             linestream.clear();
+        }
+        for(auto & face : faces) {
+            face = triangle(face.v1 * scale + origin, face.v2 * scale + origin, face.v3 * scale + origin, m);
         }
     }
 

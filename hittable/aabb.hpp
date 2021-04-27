@@ -15,7 +15,7 @@ public:
     [[nodiscard]] point3 min() const { return minimum; }
     [[nodiscard]] point3 max() const { return maximum; }
 
-    inline bool hit(const ray& r, float t_min, float t_max) const {
+    inline bool hit(const ray& r, float& t_min, float& t_max) const {
         for (int a = 0; a < 3; a++) {
             auto invD = 1.0f / r.direction()[a];
             auto t0 = (min()[a] - r.origin()[a]) * invD;
@@ -30,6 +30,13 @@ public:
         return true;
     }
 
+    int get_longest_axis() {
+        vec3 diff = minimum - maximum;
+        if(diff.x() > diff.y() && diff.x() > diff.z()) return 0;
+        if(diff.y() > diff.x() && diff.y() > diff.z()) return 1;
+        return 2;
+    }
+
 private:
     point3 minimum;
     point3 maximum;
@@ -42,7 +49,6 @@ aabb surrounding_box(aabb box0, aabb box1) {
     point3 big(fmax(box0.max().x(), box1.max().x()),
                fmax(box0.max().y(), box1.max().y()),
                fmax(box0.max().z(), box1.max().z()));
-
     return aabb(small, big);
 }
 

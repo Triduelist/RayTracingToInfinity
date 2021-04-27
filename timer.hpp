@@ -21,6 +21,15 @@ public:
         return std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
     }
 
+    [[nodiscard]] std::string to_string() const {
+        int n = (int)get_seconds();
+        int h = n / 3600;
+        n %= 3600;
+        int m = n / 60;
+        n %= 60;
+        return std::to_string(h) + " hours, " + std::to_string(m) + " minutes, " + std::to_string(n) + " seconds.\n";
+    }
+
 private:
     std::chrono::high_resolution_clock::time_point start;
 };

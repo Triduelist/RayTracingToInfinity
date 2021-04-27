@@ -26,10 +26,10 @@ public:
                 const unsigned data_pos = (i * width + j) * 5;
                 const unsigned pix_pos = ((height - i - 1) * width + j) << 2;
                 const float ns = data[data_pos + 4]; // number of accumulated values
-                // Replace nan components with zero
-                if(data[data_pos + 0] != data[data_pos + 0]) data[data_pos + 0] = .0f;
-                if(data[data_pos + 1] != data[data_pos + 1]) data[data_pos + 1] = .0f;
-                if(data[data_pos + 2] != data[data_pos + 2]) data[data_pos + 2] = .0f;
+//                // Replace nan components with zero
+//                if(data[data_pos + 0] != data[data_pos + 0]) data[data_pos + 0] = .0f;
+//                if(data[data_pos + 1] != data[data_pos + 1]) data[data_pos + 1] = .0f;
+//                if(data[data_pos + 2] != data[data_pos + 2]) data[data_pos + 2] = .0f;
 
                 pix[pix_pos + 0] = sf::Uint8(colCap(255.99 * sqrt(data[data_pos + 0] / ns)));
                 pix[pix_pos + 1] = sf::Uint8(colCap(255.99 * sqrt(data[data_pos + 1] / ns)));

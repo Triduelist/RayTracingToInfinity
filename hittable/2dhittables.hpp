@@ -25,7 +25,6 @@ public:
         }
         rec.t = t;
         rec.p = r.at(rec.t);
-        //rec.set_face_normal(r, normal);
         rec.normal = normal;
         get_plane_uv(rec.p, rec.u, rec.v);
         rec.mat_ptr = mat_ptr;
