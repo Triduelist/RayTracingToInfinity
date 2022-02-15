@@ -6,7 +6,7 @@
 - Cylinders and Cones
 - Frosted and colored glass
 - X and Z axis rotations
-- Render denoising through [Open-Image-Denoise](https://github.com/OpenImageDenoise/oidn)
+- Render de-noising through [Open-Image-Denoise](https://github.com/OpenImageDenoise/oidn)
 - Export to PNG, a filetype more user-friendly than PPM.
 - Some code refactoring
 ## Some Renders
